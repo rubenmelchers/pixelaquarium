@@ -1,0 +1,4 @@
+enum fishTypes {
+    normalFish,
+    hangryFish
+}

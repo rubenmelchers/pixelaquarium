@@ -2,31 +2,36 @@
 /// <reference path="bubble.ts"/>
 
 class Game {
-    
-    private fishlist:Array<Fish> = [];
-    private customFish:Fish;
-    private thirdFish:Fish;
-
-    private normalFish:Fish;
+    private fishlist:Array<Fish>;
     private numBubbles:number = 0;
     private timer : number = 0;
-    private fishTimer : number = 0;
         
     constructor() {
-       this.normalFish = new Fish(new normalFish);
-       this.customFish = new Fish(new fastFish);
-       this.thirdFish = new Fish(new deadFish);
 
-       this.fishlist.push(this.normalFish);
-       this.fishlist.push(this.customFish);
-       this.fishlist.push(this.thirdFish);
+       this.fishlist = new Array<Fish>();
+
+       setInterval(() => this.generateFish(), 3000);
 
        requestAnimationFrame(() => this.update());
     }
+
+    private getRandomElementOfEnum<E>(e: any): E {
+        var keys = Object.keys(e),
+            index = Math.floor(Math.random() * keys.length),
+            k = keys[index];
+        if (typeof e[k] === 'number')
+            return <any>e[k];
+        return <any>parseInt(k, 10);
+    }
+
+    private generateFish() : void {      
+        let fishFactory : abstractFactory = new concreteFactory();
+        let fish2 : Fish = fishFactory.createFish(this.getRandomElementOfEnum<fishTypes>(fishTypes));
+
+        this.fishlist.push(fish2);
+    }
     
     private update(){
-        this.addFish();
-
         if (this.numBubbles < 15 && this.timer % 20 == 0) {
             new Bubble();
             this.numBubbles++; 
@@ -48,14 +53,5 @@ class Game {
 
         // hiermee wordt de update opnieuw aangeroepen
         requestAnimationFrame(() => this.update());
-    }
-
-    private addFish() {
-        this.fishTimer++;
-        if(this.fishTimer >= (60 * 5)) { //60 fps, 10 seconds
-            this.fishTimer = 0;
-
-            this.fishlist.push(new Fish(new normalFish));
-        }
     }
 }

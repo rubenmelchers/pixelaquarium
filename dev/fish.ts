@@ -1,28 +1,27 @@
-/// <reference path="interface/ISwimBehaviour.ts" />
+class Fish implements GameObject {
 
-class Fish {
-
-    private swimbehaviour:ISwimBehaviour;
-
-    private div : HTMLElement;
+    private fishBehavior : fishBehaviour;
+    public div : HTMLElement;
     public x : number = 0;
     public y : number = 0;
-    public speed : number = 5;
+    
     public flip : number = 0;
 
-    constructor(behaviour: ISwimBehaviour) {
-        this.swimbehaviour = behaviour;
+    public setFishBehaviour(behavior : fishBehaviour) {
+        this.fishBehavior = behavior;
+    }
 
+    constructor() {
         this.createElement();
     }
 
     private createElement() : void{
-        this.div = document.createElement(this.swimbehaviour.appearance());
+        this.div = document.createElement("fish");
         document.body.appendChild(this.div);
 
         // random positie
         let startx:number = (Math.random() * window.innerWidth);
-        let starty:number = this.swimbehaviour.startY();      
+        let starty:number = (Math.random() * window.innerHeight);      
         
         this.x = startx;
         this.y = starty;
@@ -35,29 +34,10 @@ class Fish {
     }
  
     public update() : void {
-        // this.x -= this.speed;
-
-        this.performSwim();
-        this.checkCollision();
-    }
-
-    private checkCollision() : void {
-        if(this.x + this.div.clientWidth >= window.innerWidth || this.x <= 0) {
-            this.swimbehaviour.collision();
-            
-            this.flip = this.flip == 0 ? 180 : 0;
-        }
-        if(this.y + this.div.clientHeight >= window.innerHeight || this.y <= 0) {
-            this.swimbehaviour.verticalCollision();
-        }
+        this.fishBehavior.updatePosition();
     }
 
     public draw() : void {
         this.div.style.transform = "translate("+this.x+"px, "+this.y+"px) rotatey(" + this.flip + "deg)";
-    }
-
-    private performSwim(): void {
-        this.x -= this.swimbehaviour.horizontalSwim();
-        this.y -= this.swimbehaviour.verticalSwim();
     }
 }

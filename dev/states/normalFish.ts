@@ -1,29 +1,35 @@
-/// <reference path="../interface/ISwimBehaviour.ts" />
+/// <reference path="fishBehaviour.ts" />
 
-class normalFish implements ISwimBehaviour{
-    private speed:number = 5;
+class normalFish extends fishBehaviour {
+    
+	private _startY : number;
+    private _speed : number = 1;
 
-    public horizontalSwim() {
-        return this.speed;
-    }
+    constructor(fish : Fish) {
+        super();
+        this._fish          = fish;
+        this._behaviourTime  = 600;
 
-    public verticalSwim() {
-        return 0;
-    }
+        this._startY = this._fish.y;
+	}
+    
+    public updatePosition() {
+        this.updateTimer();
 
-    public appearance() {
-        return "fish";
-    }
+        this._fish.y += this._speed;
 
-    public startY() {
-        return (Math.random() * window.innerHeight);
-    }
-
-    public collision() {
-        this.speed *= -1;
-    }
-
-    public verticalCollision() {
+        if(this._fish.y > this._startY + 50 ||
+            this._fish.y < this._startY - 50) { 
+            this._speed *= -1;
+        }
         
+    }
+
+    public onTimerFinished() {
+        this.hungry();
+    }
+
+    private hungry(){
+        this._fish.setFishBehaviour(new hangryFish(this._fish));
     }
 }
